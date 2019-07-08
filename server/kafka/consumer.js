@@ -3,8 +3,8 @@ require("dotenv").config();
 const orderModel = require('../models/orderModel');
 // console.log("consumer out side", orderModel)
 
-// exports.plugin = {
-//   register: (server, option) => {
+exports.plugin = {
+  register: (server, option) => {
 var kafkaConf = {
     "group.id": "cloudkarafka-update",
     "metadata.broker.list": process.env.CLOUDKARAFKA_BROKERS.split(","),
@@ -22,7 +22,7 @@ const prefix = process.env.CLOUDKARAFKA_TOPIC_PREFIX;
 const topics = [`${prefix}abc`];
 // console.log(topics);
 const consumer = new Kafka.KafkaConsumer(kafkaConf);
-const numMessages = 1000;
+const numMessages = 5;
 let counter = 0;
 
 
@@ -36,13 +36,13 @@ consumer.on("ready", function (arg) {
 });
 
 consumer.on("data", async function (m) {
-    // console.log("consumer data", m);
-    //   counter++;
-    //   if (counter % numMessages === 0) {
-    //     // console.log("calling commit");
-    //     consumer.commit(m);
-    //   }
     try {
+        // console.log("consumer data", m);
+      counter++;
+      if (counter % numMessages === 0) {
+        // console.log("calling commit");
+        consumer.commit(m);
+      }
         const message = JSON.parse(m.value.toString())
         const result = await orderModel.updateStatusOrder(message)
     
@@ -71,6 +71,6 @@ consumer.on("event", function (log) {
 //   consumer.disconnect();
 // }, 10000);
 consumer.connect(console.log("consumer connected"));
-//   },
-//   name: "Consumer"
-// };
+  },
+  name: "Consumer"
+};

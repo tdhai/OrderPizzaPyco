@@ -7,7 +7,7 @@ const producer = require('../kafka/producer')
 const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetails, status, h) => {
   try {
     if (!helper.checkPhone(phone)) {
-      return "Phone number wrong"
+      return  {err: "Phone number wrong"}
     }
 
     var totalPriceAllTopping = 0

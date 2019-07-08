@@ -38,7 +38,6 @@ const login = async (req, h) => {
 
     const cusEmail = req.payload.email;
     const cusPassword = req.payload.password;
-
     return await service.login(cusEmail, cusPassword);
   } catch (err) {
     throw err;
@@ -67,7 +66,7 @@ const updateName = async (req, h) => {
 
 const updatePassword = async (req, h) => {
   try {
-    console.log("abc");
+  
     const passwordNew = req.payload.passwordNew;
     const rePasswordNew = req.payload.rePasswordNew;
     const passwordOld = req.payload.passwordOld;

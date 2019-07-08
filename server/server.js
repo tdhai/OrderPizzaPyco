@@ -8,7 +8,7 @@ const Vision = require("@hapi/vision");
 const HapiSwagger = require("hapi-swagger");
 
 const server = new Hapi.Server({
-  host: "localhost",
+  // host: "localhost",
   // port: 3000,
   port: process.env.PORT,
   routes: {
@@ -46,21 +46,20 @@ const init = async () => {
   await server.register([
     { plugin: require("./routes/customerRoute") },
 
-    { plugin: require("./routes/productRoute") },
-    { plugin: require("./routes/categoryRoute") },
-    { plugin: require("./routes/toppingRoute") },
-    { plugin: require("./routes/orderRoute") },
-    // { plugin: require("./kafka/consumer") },
+    { plugin: require('./routes/productRoute') },
+    { plugin: require('./routes/categoryRoute') },
+    { plugin: require('./routes/toppingRoute') },
+    { plugin: require('./routes/orderRoute') },
+    { plugin: require('./kafka/consumer')},
     Inert,
     Vision,
     {
       plugin: HapiSwagger,
       options: swaggerOptions
     }
-  ]);
-  await server.start();
-  require('./kafka/consumer')
-  console.log(`Server running at: ${server.info.uri}`);
+  ])
+  await server.start()
+  console.log(`Server running at: ${server.info.uri}`)
   // console.log("started");
 };
 

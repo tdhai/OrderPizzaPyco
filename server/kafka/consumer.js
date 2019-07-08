@@ -1,5 +1,6 @@
 var Kafka = require("node-rdkafka");
 require("dotenv").config();
+const orderModel = require('../models/orderModel')
 
 exports.plugin = {
   register: (server, option) => {

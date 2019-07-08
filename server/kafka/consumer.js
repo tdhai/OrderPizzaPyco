@@ -1,6 +1,6 @@
 var Kafka = require("node-rdkafka");
 require("dotenv").config();
-
+//test
 exports.plugin = {
   register: (server, option) => {
     var kafkaConf = {

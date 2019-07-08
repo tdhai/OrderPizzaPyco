@@ -44,7 +44,7 @@ const createOrder = async (customerID, address, phone, date, totalPrice, notice,
   // const createOrder = async (message) => {
   try {
     // console.log(orderData.orderDetails)
-    var order = new Order();
+    // var order = new Order();
 
     var order = new Order()
     order.customerID = customerID;
@@ -123,11 +123,16 @@ const bestseller = async () => {
 //     { status: orderData.status }
 //   ).then(order => order).catch(err => { return error })
 
-const updateOrder = (orderData) => {
+const updateOrder = (dataMes) => {
+  try{console.log("abc")
+  // console.log(orderData)
   return Order.findByIdAndUpdate(
-    { _id: orderData.orderID },
-    { status: orderData.status }
+    { _id: dataMes.orderID },
+    { status: dataMes.statusMes }
   )
+  }catch(err){
+    throw err
+  }
 }
 
 

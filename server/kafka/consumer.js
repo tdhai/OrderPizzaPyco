@@ -1,8 +1,9 @@
 var Kafka = require("node-rdkafka");
 require("dotenv").config();
-const modelOrder = require('../models/orderModel');
-exports.plugin = {
-  register: (server, option) => {
+const orderModel = require('../models/orderModel');
+
+// exports.plugin = {
+//   register: (server, option) => {
     var kafkaConf = {
       "group.id": "cloudkarafka-update",
       "metadata.broker.list": process.env.CLOUDKARAFKA_BROKERS.split(","),
@@ -18,7 +19,7 @@ exports.plugin = {
 
     const prefix = process.env.CLOUDKARAFKA_TOPIC_PREFIX;
     const topics = [`${prefix}abc`];
-    console.log(topics);
+    // console.log(topics);
     const consumer = new Kafka.KafkaConsumer(kafkaConf);
     const numMessages = 1000;
     let counter = 0;
@@ -35,19 +36,25 @@ exports.plugin = {
 
     consumer.on("data", function (m) {
       // console.log("consumer data", m);
-      counter++;
-      if (counter % numMessages === 0) {
-        // console.log("calling commit");
-        consumer.commit(m);
-      }
-      // console.log(m.value.toString());
-      // console.log("value", m.value)
-      // return modelOrder.createOrder(JSON.parse(m.value))
-      // console.log(JSON.parse(m.value.toString()))
-      const bien = JSON.parse(m.value.toString())
-      console.log(modelOrder.updateOrder(bien));
-      return modelOrder.updateOrder(bien);
-    });
+    //   counter++;
+    //   if (counter % numMessages === 0) {
+    //     // console.log("calling commit");
+    //     consumer.commit(m);
+    //   }
+
+        const message = JSON.parse(m.value.toString()) 
+        //message là một object 
+        console.log(orderModel.updateOrder)
+        orderModel.updateOrder( message)
+
+         
+
+        .then(result =>{
+            return result
+        })
+        .catch(err) 
+        
+    })
 
     consumer.on("disconnected", function (arg) {
       // process.exit();
@@ -66,7 +73,7 @@ exports.plugin = {
     //   console.log("Disconect")
     //   consumer.disconnect();
     // }, 10000);
-    consumer.connect(console.log("connected"));
-  },
-  name: "Consumer"
-};
+    consumer.connect(console.log("consumer connected"));
+//   },
+//   name: "Consumer"
+// };

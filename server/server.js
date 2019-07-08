@@ -50,7 +50,7 @@ const init = async () => {
     { plugin: require("./routes/categoryRoute") },
     { plugin: require("./routes/toppingRoute") },
     { plugin: require("./routes/orderRoute") },
-    { plugin: require("./kafka/consumer") },
+    // { plugin: require("./kafka/consumer") },
     Inert,
     Vision,
     {
@@ -59,7 +59,7 @@ const init = async () => {
     }
   ]);
   await server.start();
-  // require('./kafka/consumer')
+  require('./kafka/consumer')
   console.log(`Server running at: ${server.info.uri}`);
   // console.log("started");
 };

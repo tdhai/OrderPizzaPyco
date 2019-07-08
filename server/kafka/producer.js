@@ -34,7 +34,7 @@ const sendMessage = async (customerID, address, phone, date, totalPrice, notice,
     const order = await modelOrder.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
 
 
-    const statusMes = "processed";
+    const statusMes = "Processed";
     const orderID = order._id
     const messageBuffer = Buffer.from(
       JSON.stringify({

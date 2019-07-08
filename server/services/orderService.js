@@ -4,7 +4,7 @@ const productModel = require('../models/productModel')
 const toppingModel = require('../models/toppingModel')
 const producer = require('../kafka/producer')
 
-const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetails, h) => {
+const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetails, status, h) => {
   try {
     if (!helper.checkPhone(phone)) {
       return  {err: "Phone number wrong"}
@@ -14,7 +14,7 @@ const createOrder = async (customerID, address, phone, date, totalPrice, notice,
     var totalPriceAllProduct = 0
 
     for (var i = 0; i < orderDetails.length; i++) {
-      if (!productModel.getProduct(orderDetails[i].productID)){
+      if (!productModel.getProduct(orderDetails[i].productID)) {
         return await err
       }
 
@@ -27,8 +27,23 @@ const createOrder = async (customerID, address, phone, date, totalPrice, notice,
     if (totalPrice !== totalPriceServer) {
       return { err: "Total price server: " + totalPriceServer + ". \n Total price clien wrong(ProductID or ToppingID is not valid)!!!" }
     }
+
+    // message = {
+    //   mes_cusID: customerID,
+    //   mes_address: address,
+    //   mes_phone: phone,
+    //   mes_date: date,
+    //   mes_totalPrice: totalPrice,
+    //   mes_notice: notice,
+    //   mes_orderDetail: orderDetails
+    // }
+
+    return await producer.sendMessage(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
+
+
+
     // producer.send(customerID)
-    return await model.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails)
+    // return await model.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails)
   } catch (err) {
     throw ("create order fail SERVICE", err)
   }
@@ -42,14 +57,14 @@ const getOrder = async (customerID) => {
   }
 }
 
-const bestSeller = async() =>{
-  try{
+const bestSeller = async () => {
+  try {
     const result = await model.bestseller()
-    if(!result){
-      return {err: "Do not have best seller,, because I do not order"}
+    if (!result) {
+      return { err: "Do not have best seller,, because I do not order" }
     }
     return await result
-  }catch(err){
+  } catch (err) {
     throw ("best seller fail SERVICE", err)
   }
 }

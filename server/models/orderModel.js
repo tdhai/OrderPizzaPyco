@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const toppingModel = require('./toppingModel')
 const productModel = require('./productModel')
-const { theToppingModel } = require('./toppingModel')
+// const { theToppingModel } = require('./toppingModel')
+const consumer = require('../kafka/consumer')
+
+
 const orderSchema = new Schema({
   customerID: { type: Schema.Types.ObjectId, ref: "customer", required: true },
   address: { type: String, required: true },
@@ -10,6 +13,7 @@ const orderSchema = new Schema({
   date: { type: Date, required: true },
   totalPrice: { type: Number, required: true },
   notice: { type: String, required: false },
+  status: { type: String, required: true },
   orderDetail: [{
     productID: { type: Schema.Types.ObjectId, ref: 'product', required: true },
     size: { type: String, ref: 'product', required: true },
@@ -19,9 +23,10 @@ const orderSchema = new Schema({
   }]
 })
 
+const Order = mongoose.model('order', orderSchema)
 const totalPriceProduct = async (productID, size, type, quantity) => {
   // console.log(productID, size, type)
-  console.log(await productModel.getPriceProduct(productID, size, type))
+  // console.log(await productModel.getPriceProduct(productID, size, type))
   const product = await productModel.getPriceProduct(productID, size, type)
   return product * quantity
 }
@@ -34,9 +39,14 @@ const totalPriceTopping = async (toppingIDs, quantity) => {
   return priceTopping * quantity
 }
 
-const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetail) => {
+// const createOrder = async (orderData) => {
+const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetails, status) => {
+  // const createOrder = async (message) => {
   try {
+    // console.log(orderData.orderDetails)
     var order = new Order();
+
+    var order = new Order()
     order.customerID = customerID;
     order.address = address;
     order.phone = phone;
@@ -46,7 +56,19 @@ const createOrder = async (customerID, address, phone, date, totalPrice, notice,
     // orderDetail = productID;
     // orderDetail = quantity;
     // orderDetail = topping;
-    order.orderDetail = orderDetail
+    order.orderDetail = orderDetails
+    order.status = status
+
+    // order.customerID = orderData.customerID;
+    // order.address = orderData.address;
+    // order.phone = orderData.phone;
+    // order.date = orderData.date;
+    // order.totalPrice = orderData.totalPrice;
+    // order.notice = orderData.notice;
+    // // orderDetail = productID;
+    // // orderDetail = quantity;
+    // // orderDetail = topping;
+    // order.orderDetail = orderData.orderDetails
 
     return await order.save()
   } catch (err) {
@@ -84,8 +106,8 @@ const bestseller = async () => {
         }
       }
     ])
-    if(!result){
-      return {err: "Do not have best seller,, because I do not order"}
+    if (!result) {
+      return { err: "Do not have best seller,, because I do not order" }
     }
     return await result
   } catch (err) {
@@ -93,7 +115,21 @@ const bestseller = async () => {
   }
 }
 
-const Order = mongoose.model('order', orderSchema)
+
+// const updateOrder = (orderData) =>
+//   Order.findByIdAndUpdate({
+//     _id: orderData.orderID
+//   },
+//     { status: orderData.status }
+//   ).then(order => order).catch(err => { return error })
+
+const updateOrder = (orderData) => {
+  return Order.findByIdAndUpdate(
+    { _id: orderData.orderID },
+    { status: orderData.status }
+  )
+}
+
 
 module.exports = {
   Order,
@@ -101,5 +137,6 @@ module.exports = {
   totalPriceProduct,
   getOrder,
   totalPriceTopping,
-  bestseller
+  bestseller,
+  updateOrder
 }

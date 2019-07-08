@@ -67,7 +67,7 @@ const updateName = async (req, h) => {
 
 const updatePassword = async (req, h) => {
   try {
-    console.log("abc")
+    console.log("abc");
     const passwordNew = req.payload.passwordNew;
     const rePasswordNew = req.payload.rePasswordNew;
     const passwordOld = req.payload.passwordOld;

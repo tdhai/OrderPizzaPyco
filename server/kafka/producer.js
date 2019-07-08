@@ -1,7 +1,7 @@
 const Kafka = require("node-rdkafka");
 const Joi = require("@hapi/joi");
 require("dotenv").config();
-const modelOrder = require('../models/orderModel')
+const orderModel = require('../models/orderModel')
 
 const kafkaConf = {
   "group.id": "cloudkarafka-order",
@@ -31,7 +31,7 @@ const sendMessage = async (customerID, address, phone, date, totalPrice, notice,
     // );
 
     // producer.produce(topic, -1, bien, 2);
-    const order = await modelOrder.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
+    const order = await orderModel.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
 
 
     const statusMes = "Processed";
@@ -42,8 +42,8 @@ const sendMessage = async (customerID, address, phone, date, totalPrice, notice,
         statusMes
       })
     );
-    producer.produce(topic, -1, messageBuffer, 2);
-
+    // console.log("producer", orderModel)
+    producer.produce(topic, -1, messageBuffer, 2)
 
 
     // setTimeout(() => producer.disconnect(), 0);

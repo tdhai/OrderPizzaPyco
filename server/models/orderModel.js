@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const toppingModel = require('./toppingModel')
 const productModel = require('./productModel')
-// const { theToppingModel } = require('./toppingModel')
-const consumer = require('../kafka/consumer')
 
 
 const orderSchema = new Schema({
@@ -24,6 +22,7 @@ const orderSchema = new Schema({
 })
 
 const Order = mongoose.model('order', orderSchema)
+
 const totalPriceProduct = async (productID, size, type, quantity) => {
   // console.log(productID, size, type)
   // console.log(await productModel.getPriceProduct(productID, size, type))
@@ -123,12 +122,25 @@ const bestseller = async () => {
 //     { status: orderData.status }
 //   ).then(order => order).catch(err => { return error })
 
-const updateOrder = (dataMes) => {
-  try{console.log("abc")
+// const updateOrder = async (message) => {
+//   try{console.log(message)
+//   // console.log(orderData)
+//   return await Order.findByIdAndUpdate(
+//     {"_id": message.orderID},
+//     {"status": message.statusMes}
+//   )
+//   }catch(err){
+//     throw err
+//   }
+// }
+
+const updateStatusOrder = async (message) => {
+  try{
+    // console.log(message)
   // console.log(orderData)
-  return Order.findByIdAndUpdate(
-    { _id: dataMes.orderID },
-    { status: dataMes.statusMes }
+  return await Order.findByIdAndUpdate(
+    {"_id": message.orderID},
+    {"status": message.statusMes}
   )
   }catch(err){
     throw err
@@ -143,5 +155,5 @@ module.exports = {
   getOrder,
   totalPriceTopping,
   bestseller,
-  updateOrder
+  updateStatusOrder
 }

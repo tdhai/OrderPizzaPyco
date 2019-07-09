@@ -45,12 +45,12 @@ const sendMessage = async (customerID, address, phone, date, totalPrice, notice,
     // console.log("producer", orderModel)
     producer.produce(topic, -1, messageBuffer, 2)
 
-
+    return order
     // setTimeout(() => producer.disconnect(), 0);
   } catch (err) {
     console.error(err);
   }
-  return "Message sent successfully!";
+  // return "Message sent successfully!";
 };
 
 const producer = new Kafka.Producer(kafkaConf);

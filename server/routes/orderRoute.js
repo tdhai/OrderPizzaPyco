@@ -22,7 +22,7 @@ exports.plugin = {
             address: JoiHapi.string().required(),
             totalPrice: JoiHapi.number().required(),
             notice: JoiHapi.string().max(500),
-            status: JoiHapi.string().valid(["Processing"]),
+            // status: JoiHapi.string().valid(["Processing"]),
             orderDetail: JoiHapi.array().items(JoiHapi.object().keys({
               productID: JoiHapi.string().required(),
               size: JoiHapi.string().required(),
@@ -61,7 +61,7 @@ exports.plugin = {
     server.route({
       method: 'GET',
       path: '/products/bestseller',
-      options:{
+      options: {
         handler: controller.bestSeller,
         tags: ['api']
       }

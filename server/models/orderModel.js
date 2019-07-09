@@ -135,14 +135,12 @@ const bestseller = async () => {
 // }
 
 const updateStatusOrder = async (message) => {
-  try{
-    // console.log(message)
-  // console.log(orderData)
-  return await Order.findByIdAndUpdate(
-    {"_id": message.orderID},
-    {"status": message.statusMes}
-  )
-  }catch(err){
+  try {
+    return await Order.findByIdAndUpdate(
+      { "_id": message.orderID },
+      { "status": message.statusMes }
+    )
+  } catch (err) {
     throw err
   }
 }

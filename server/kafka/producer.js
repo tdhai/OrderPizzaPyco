@@ -18,34 +18,15 @@ const kafkaConf = {
 const prefix = process.env.CLOUDKARAFKA_TOPIC_PREFIX;
 const topic = `${prefix}abc`;
 
-const sendMessage = async (customerID, address, phone, date, totalPrice, notice, orderDetails, status) => {
-  // const sendMessage = () => {
-  // const status = "123";
-  // const id = "id";
+const sendMessage = async (message) => {
   try {
-    // const bien = Buffer.from(
-    //   JSON.stringify({
-    //     _id: id,
-    //     status: status
-    //   })
-    // );
-
-    // producer.produce(topic, -1, bien, 2);
-    const order = await orderModel.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
-
-
-    const statusMes = "Processed";
-    const orderID = order._id
     const messageBuffer = Buffer.from(
       JSON.stringify({
-        orderID,
-        statusMes
+        orderID: message,
+        statusMes: "Processed"
       })
     );
-    // console.log("producer", orderModel)
     producer.produce(topic, -1, messageBuffer, 2)
-
-    return order
     // setTimeout(() => producer.disconnect(), 0);
   } catch (err) {
     console.error(err);

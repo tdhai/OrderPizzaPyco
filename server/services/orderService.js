@@ -7,7 +7,7 @@ const producer = require('../kafka/producer')
 const createOrder = async (customerID, address, phone, date, totalPrice, notice, orderDetails, status, h) => {
   try {
     if (!helper.checkPhone(phone)) {
-      return  {err: "Phone number wrong"}
+      return { err: "Phone number wrong" }
     }
 
     var totalPriceAllTopping = 0
@@ -27,23 +27,14 @@ const createOrder = async (customerID, address, phone, date, totalPrice, notice,
     if (totalPrice !== totalPriceServer) {
       return { err: "Total price server: " + totalPriceServer + ". \n Total price clien wrong(ProductID or ToppingID is not valid)!!!" }
     }
-
-    // message = {
-    //   mes_cusID: customerID,
-    //   mes_address: address,
-    //   mes_phone: phone,
-    //   mes_date: date,
-    //   mes_totalPrice: totalPrice,
-    //   mes_notice: notice,
-    //   mes_orderDetail: orderDetails
-    // }
-
-    return await producer.sendMessage(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
+    const status = "Processcing"
+    // return await producer.sendMessage(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
 
 
 
-    // producer.send(customerID)
-    // return await model.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails)
+    const result = await model.createOrder(customerID, address, phone, date, totalPrice, notice, orderDetails, status)
+    producer.sendMessage(result._id)
+    return result
   } catch (err) {
     throw ("create order fail SERVICE", err)
   }
